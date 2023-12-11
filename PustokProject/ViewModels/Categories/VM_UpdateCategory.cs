@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PustokProject.ViewModels;
+namespace PustokProject.ViewModels.Categories;
 
 public class VM_UpdateCategory
 {

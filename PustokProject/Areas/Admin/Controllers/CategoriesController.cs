@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PustokProject.CoreModels;
 using PustokProject.Persistance;
-using PustokProject.ViewModels;
+using PustokProject.ViewModels.Categories;
 
 namespace PustokProject.Areas.Admin.Controllers;
 
@@ -105,13 +105,23 @@ public class CategoriesController : Controller
         if (category != null)
         {
             
-        var childCategories = await _context.Categories.Where(c => c.ParentId == id).ToListAsync();
-        _context.Categories.RemoveRange(childCategories);
-        _context.Categories.Remove(category);
+        await _context.Categories.Where(c => c.ParentId == id).ForEachAsync(c => c.Delete());
+        category.Delete();
         await _context.SaveChangesAsync();
+
         }
         return RedirectToAction(nameof(Index));
     }
-    
-    
+
+    public async Task<IActionResult> RevokeDelete(int id)
+    {
+        var category = await _context.Categories.FindAsync(id);
+        if (category != null)
+        {
+            category.RevokeDelete();
+            await _context.SaveChangesAsync();
+        }
+        return RedirectToAction(nameof(Index));
+    }
+
 }

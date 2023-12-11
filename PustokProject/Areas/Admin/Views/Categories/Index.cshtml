@@ -1,4 +1,4 @@
-﻿@using PustokProject.ViewModels;
+﻿@using PustokProject.ViewModels.Categories;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @model VM_CategoriesIndex;
@@ -21,13 +21,15 @@
                 <tbody>
                     @foreach (var category in Model.Categories)
                     {
-                        <tr colspan="2">
+                        <tr style="color:@(category.IsDeleted ? "white" : "black"); background-color:@(category.IsDeleted ? "red" : string.Empty)" colspan="2">
                             <td>@category.Id</td>
                             <td>@category.Name</td>
                             <td>@category.ParentId</td>
                             <td>@(category.Parent?.Name ?? "N/A") </td>
-                            <td><a asp-area="Admin" asp-controller="Categories" asp-action="UpdateCategory" asp-route-id="@category.Id" class="btn btn-warning">Edit</a></td>
-                            <td><a asp-area="Admin" asp-controller="Categories" asp-action="DeleteCategory" asp-route-id="@category.Id" class="btn btn-danger">Delete</a></td>
+                            <td><a style="display:@(category.IsDeleted ? "none" : string.Empty);)" asp-area="Admin" asp-controller="Categories" asp-action="UpdateCategory" asp-route-id="@category.Id" class="btn btn-warning">Edit</a></td>
+                            <td><a style="display:@(category.IsDeleted ? "none" : string.Empty);)" asp-area="Admin" asp-controller="Categories" asp-action="DeleteCategory" asp-route-id="@category.Id" class="btn btn-danger">Delete</a></td>
+                            <td><a style="display:@(category.IsDeleted ? string.Empty : "none" );)" asp-area="Admin" asp-action="RevokeDelete" asp-route-id="@category.Id" class="btn btn-primary">Revoke</a></td>
+
                         </tr>
                     }
                 </tbody>

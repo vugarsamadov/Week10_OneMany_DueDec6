@@ -3,9 +3,8 @@ using NuGet.Protocol.Core.Types;
 
 namespace PustokProject.CoreModels
 {
-    public class Brand
+    public class Brand : BaseModel
     {
-        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

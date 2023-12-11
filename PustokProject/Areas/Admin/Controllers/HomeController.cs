@@ -4,6 +4,7 @@ using PustokProject.CoreModels;
 using PustokProject.Enums;
 using PustokProject.Persistance;
 using PustokProject.ViewModels;
+using PustokProject.ViewModels.Sliders;
 
 namespace PustokProject.Areas.Home.Controllers
 {
@@ -18,7 +19,7 @@ namespace PustokProject.Areas.Home.Controllers
         {
             _context = context;
         }
-
+        
         public async Task<IActionResult> Index()
         {
             var vm = new VM_SlidersIndex();
@@ -82,18 +83,30 @@ namespace PustokProject.Areas.Home.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index)); 
         }
-        
-        [HttpGet("/Admin/books/{id:int}")]
+    
         public async Task<IActionResult> DeleteSlider(int id)
         {
             var slider = await _context.Sliders.FindAsync(id);
             if (slider != null)
             {
-                _context.Remove(slider);
+                slider.Delete();
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));
         }
+        
+        public async Task<IActionResult> RevokeDelete(int id)
+        {
+            var slider = await _context.Sliders.FindAsync(id);
+            if (slider != null)
+            {
+                slider.RevokeDelete();
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        
         
         
     }

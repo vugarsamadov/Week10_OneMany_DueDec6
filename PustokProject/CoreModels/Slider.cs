@@ -3,11 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PustokProject.CoreModels
 {
-    public class Slider
+    public class Slider : BaseModel
     {
-
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(30)]
         public string Title{ get; set; }

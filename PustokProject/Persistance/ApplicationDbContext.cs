@@ -11,6 +11,10 @@ namespace PustokProject.Persistance
         public DbSet<Book> Books {  get; set; }
         public DbSet<Brand> Brands{  get; set; }
         public DbSet<Category> Categories{  get; set; }
+        public DbSet<BookImage> BookImages{  get; set; }
+        public DbSet<BookAuthor> BookAuthors{  get; set; }
+        public DbSet<Author> Authors{  get; set; }
+        public DbSet<Blog> Blogs{  get; set; }
 
 
 
@@ -18,8 +22,8 @@ namespace PustokProject.Persistance
         {
             base.OnConfiguring(optionsBuilder);
             optionsBuilder
-                //.UseSqlServer(@"Server=DESKTOP-MV8SC5T\SQLEXPRESS;Database=PracticeNov31Pustok;TrustServerCertificate=True;Encrypt=False;Trusted_Connection=True");
-                .UseSqlServer(@"Server=localhost;Database=Pustok;User Id=SA;Password=Vugar2003Vs$");
+                //.UseSqlServer(@"Server=DESKTOP-MV8SC5T\SQLEXPRESS;Database=PracticePustok03;TrustServerCertificate=True;Encrypt=False;Trusted_Connection=True");
+                .UseSqlServer(@"Server=localhost;Database=Pustok3;User Id=SA;Password=Vugar2003Vs$");
         }
     }
 }

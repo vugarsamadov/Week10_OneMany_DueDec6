@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Operations;
 using Microsoft.EntityFrameworkCore;
 using PustokProject.CoreModels;
 using PustokProject.Persistance;
-using PustokProject.ViewModels;
+using PustokProject.ViewModels.Books;
 
 namespace PustokProject.Areas.Admin.Controllers
 {
@@ -20,9 +21,12 @@ namespace PustokProject.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var model = new VM_BooksIndex();
-            model.Books = await Context.Books.Include(b => b.Brand)
+            model.Books = await Context.Books
                 .Include(b=>b.Category)
+                .Include(b=>b.BookAuthors)
+                .ThenInclude(a=>a.Author)
                 .ToListAsync();
+            
             return View(model);
         }
 
@@ -34,6 +38,7 @@ namespace PustokProject.Areas.Admin.Controllers
             ViewBag.Categories = new SelectList(categories,"Id","Name","SelectCategory");
             
             var model = new VM_CreateBook();
+            model.Authors = new SelectList(await Context.Authors.ToListAsync(),"Id","Name");
 
             return View(model);
         }
@@ -50,19 +55,49 @@ namespace PustokProject.Areas.Admin.Controllers
             {
                 return View(model);
             }
+
+            if (!await Context.Authors.AllAsync(c => model.AuthorIds.Contains(c.Id)))
+            {
+                ModelState.AddModelError("AuthorIds","Author ids are invalid!");
+                model.Authors = new SelectList(await Context.Authors.ToListAsync(),"Id","Name");
+                return View(model);
+            }
+            
             var book = new Book();
             book.Name = model.Name;
             book.Description = model.Description;
             book.Price = model.Price;
-            book.BrandId = model.BrandId;
-            book.CategoryId = model.CategoryId;
             
+            book.CategoryId = model.CategoryId;
             book.DiscountPercentage = model.DiscountPercentage;
             book.IsAvailable = model.IsAvailable == "true";
             book.ProductCode = model.ProductCode;
-            book.CoverImageUrl = model.CoverImageUrl;
+
+            book.BookAuthors = model.AuthorIds.Select(id => new BookAuthor()
+            {
+                AuthorId = id
+            }).ToList();
+
+            var imageNameCover = await model.ImageFileCover.SaveToRootWithUniqueNameAsync();
+            var imageNameBack = await model.ImageFileBack.SaveToRootWithUniqueNameAsync();
+            
+            var imageCover = new BookImage();
+            imageCover.ImagePath = imageNameCover;
+
+            var imageBack = new BookImage();
+            imageBack.ImagePath = imageNameBack;
+            
+            book.CoverImageUrl = imageNameCover;
+            book.BackImageUrl = imageNameBack;
+            
+            
+            book.Images.Add(imageCover);
+            book.Images.Add(imageBack);
+            
             await Context.Books.AddAsync(book);
             await Context.SaveChangesAsync();
+
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -75,21 +110,26 @@ namespace PustokProject.Areas.Admin.Controllers
             ViewBag.Categories = new SelectList(categories,"Id","Name","SelectCategory");
             
             var model = new VM_UpdateBook();
+
             var book = await Context.Books.FirstOrDefaultAsync(b => b.Id == id);
+            model.Authors = new SelectList(await Context.Authors.ToListAsync(),"Id","Name");
+
             if (book == null)
             {
                 ModelState.AddModelError("Book","Book Not found!");
                 return View(model);
             }
+            
             model.Name = book.Name;
             model.Description = book.Description;
             model.Price = book.Price;
-            model.BrandId = book.BrandId;
             model.CategoryId = book.CategoryId;
             model.DiscountPercentage = book.DiscountPercentage;
             model.IsAvailable = book.IsAvailable;
             model.ProductCode = book.ProductCode;
+
             model.CoverImageUrl = book.CoverImageUrl;
+            model.BackImageUrl = book.BackImageUrl;
             return View(model);
         }
         [HttpPost]
@@ -100,11 +140,13 @@ namespace PustokProject.Areas.Admin.Controllers
             var categories= await Context.Categories.Where(c =>c.ParentId != null).ToListAsync();
             ViewBag.Categories = new SelectList(categories,"Id","Name","SelectCategory");
 
+            
             if (!ModelState.IsValid)
             {
+                model.Authors = new SelectList(await Context.Authors.ToListAsync(),"Id","Name");
                 return View(model);
             }
-            var book = await Context.Books.FirstOrDefaultAsync(b => b.Id == id);
+            var book = await Context.Books.Include(b=>b.BookAuthors).FirstOrDefaultAsync(b => b.Id == id);
             if (book == null)
             {
                 ModelState.AddModelError("Book","Book Not found!");
@@ -113,13 +155,29 @@ namespace PustokProject.Areas.Admin.Controllers
                             book.Name = model.Name;
                             book.Description = model.Description;
                             book.Price = model.Price;
-                            book.BrandId = model.BrandId;
                             book.CategoryId = model.CategoryId;
                             book.DiscountPercentage = model.DiscountPercentage;
                             book.IsAvailable = model.IsAvailable ?? false;
                             book.ProductCode = model.ProductCode;
-                            book.CoverImageUrl = model.CoverImageUrl;
-                            await Context.SaveChangesAsync();
+                            if (model.AuthorIds != null)
+                                book.BookAuthors = model.AuthorIds.Select(id => new BookAuthor()
+                                {
+                                    AuthorId = id
+                                }).ToList();
+                            // if (model.ImageFile != null)
+            // {
+            //     var imageName = await model.ImageFile.SaveToRootWithUniqueNameAsync();
+            //     
+            //     BookImage bi = new();
+            //     bi.BookId = id;
+            //     bi.ImagePath = imageName;
+            //     //bi.Activate();
+            //     await Context.BookImages.AddAsync(bi);
+            //
+            //     await Context.SaveChangesAsync();
+            //     //book.CoverImageUrl = imageName;
+            // }
+            await Context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
         
@@ -128,7 +186,17 @@ namespace PustokProject.Areas.Admin.Controllers
             var book = await Context.Books.FirstOrDefaultAsync(b => b.Id == id);
             if (book != null)
             {
-                Context.Books.Remove(book);
+                book.Delete();
+                await Context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> RevokeDelete(int id)
+        {
+            var book = await Context.Books.FindAsync(id);
+            if (book != null)
+            {
+                book.RevokeDelete();
                 await Context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));

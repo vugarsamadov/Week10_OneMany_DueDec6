@@ -1,4 +1,4 @@
-﻿@using PustokProject.ViewModels;
+﻿@using PustokProject.ViewModels.Books;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @model VM_BooksIndex;
@@ -14,32 +14,39 @@
                         <th>Id</th>
                         <th>Name</th>
                         <th>Description</th>
+                        <th>Cover Image</th>
+                        <th>Back Image</th>
                         <th>Price</th>
                         <th>DiscountedPrice</th>
                         <th>ProductCode</th>
                         <th>IsAvailable</th>
+                        <th>Authors</th>
                         <th>ProductCode</th>
-                        <th>Brand</th>
                         <th>Category</th>
-                        <th colspan="2">Action</th>
+                        <th colspan="4">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var book in Model.Books)
                     {
-                        <tr colspan="2">
+                        <tr style="color:@(book.IsDeleted ? "white" : "black"); background-color:@(book.IsDeleted ? "red" : string.Empty)" colspan="2">
                             <td>@book.Id</td>
                             <td>@book.Name</td>
                             <td>@book.Description</td>
+                            <th> <img width="100" height="50" src="~/bookimages/@book.CoverImageUrl"/> </th>
+                            <th> <img width="100" height="50" src="~/bookimages/@book.BackImageUrl"/> </th>
                             <td>@book.Price</td>
                             <td>@book.DiscountedPrice</td>
                             <td>@book.ProductCode</td>
                             <td>@book.IsAvailable</td>
-                            <td>@book.ProductCode</td>
-                            <td>@book.Brand.Name</td>
+                            
+                            <td>@(string.Join(", ",book.BookAuthors.Select(a=>a.Author.Name)))</td>
+                                <td>@book.ProductCode</td>                            
                             <td>@book.Category.Name</td>
-                            <td><a asp-area="Admin" asp-controller="Books" asp-action="UpdateBook" asp-route-id="@book.Id" class="btn btn-warning">Edit</a></td>
-                            <td><a asp-area="Admin" asp-controller="Books" asp-action="DeleteBook" asp-route-id="@book.Id" class="btn btn-danger">Delete</a></td>
+                            <td><a style="display:@(book.IsDeleted ? "none" : string.Empty);)" asp-area="Admin" asp-controller="Books" asp-action="UpdateBook" asp-route-id="@book.Id" class="btn btn-warning">Edit</a></td>
+                            <td><a style="display:@(book.IsDeleted ? "none" : string.Empty);)" asp-area="Admin" asp-controller="BookImages" asp-action="Index" asp-route-Id="@book.Id" class="btn btn-warning">Edit Images</a></td>
+                            <td><a style="display:@(book.IsDeleted ? "none" : string.Empty);)" asp-area="Admin" asp-controller="Books" asp-action="DeleteBook" asp-route-id="@book.Id" class="btn btn-danger">Delete</a></td>
+                            <td><a style="display:@(book.IsDeleted ? string.Empty : "none" );)" asp-area="Admin" asp-action="RevokeDelete" asp-route-id="@book.Id" class="btn btn-primary">Revoke</a></td>
                         </tr>
                     }
                 </tbody>

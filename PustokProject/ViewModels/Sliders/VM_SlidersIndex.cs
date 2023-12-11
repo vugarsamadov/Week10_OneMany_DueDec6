@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using PustokProject.CoreModels;
 
-namespace PustokProject.ViewModels
+namespace PustokProject.ViewModels.Sliders
 {
     public class VM_SlidersIndex
     {

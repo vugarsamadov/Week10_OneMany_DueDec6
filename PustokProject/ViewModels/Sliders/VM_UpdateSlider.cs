@@ -1,7 +1,7 @@
 ﻿using PustokProject.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace PustokProject.ViewModels
+namespace PustokProject.ViewModels.Sliders
 {
     public class VM_UpdateSlider
     {

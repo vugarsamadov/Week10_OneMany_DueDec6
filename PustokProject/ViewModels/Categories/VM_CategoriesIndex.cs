@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using PustokProject.CoreModels;
 
-namespace PustokProject.ViewModels;
+namespace PustokProject.ViewModels.Categories;
 
 public class VM_CategoriesIndex
 {

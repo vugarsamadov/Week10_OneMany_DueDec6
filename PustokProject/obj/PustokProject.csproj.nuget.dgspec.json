@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\vuqar\\Desktop\\PustokProject\\PustokProject\\PustokProject.csproj": {}
+    "C:\\Users\\vuqar\\Desktop\\PustokProject_Due11Dec\\PustokProject.csproj": {}
   },
   "projects": {
-    "C:\\Users\\vuqar\\Desktop\\PustokProject\\PustokProject\\PustokProject.csproj": {
+    "C:\\Users\\vuqar\\Desktop\\PustokProject_Due11Dec\\PustokProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\vuqar\\Desktop\\PustokProject\\PustokProject\\PustokProject.csproj",
+        "projectUniqueName": "C:\\Users\\vuqar\\Desktop\\PustokProject_Due11Dec\\PustokProject.csproj",
         "projectName": "PustokProject",
-        "projectPath": "C:\\Users\\vuqar\\Desktop\\PustokProject\\PustokProject\\PustokProject.csproj",
+        "projectPath": "C:\\Users\\vuqar\\Desktop\\PustokProject_Due11Dec\\PustokProject.csproj",
         "packagesPath": "C:\\Users\\vuqar\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\vuqar\\Desktop\\PustokProject\\PustokProject\\obj\\",
+        "outputPath": "C:\\Users\\vuqar\\Desktop\\PustokProject_Due11Dec\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

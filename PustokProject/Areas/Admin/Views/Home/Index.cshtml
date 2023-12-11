@@ -1,4 +1,4 @@
-﻿@using PustokProject.ViewModels;
+﻿@using PustokProject.ViewModels.Sliders;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @model VM_SlidersIndex;
@@ -25,15 +25,17 @@
 
                     @foreach(var slide in Model.Sliders)
                     {
-                        <tr colspan="2">
+                        <tr style="color:@(slide.IsDeleted ? "white" : "black"); background-color:@(slide.IsDeleted ? "red" : string.Empty)" colspan="2">
                             <td>@slide.Id</td>
                             <td>@slide.Title</td>
                             <td>@slide.Description</td>
                             <td>@slide.ButtonText</td>
                             <td>@slide.TextPosition</td>
                             <td>@slide.ThumpnailUrl</td>
-                            <td><a asp-area="Admin" asp-action="UpdateSlider" asp-route-id="@slide.Id" class="btn btn-warning">Edit</a></td>
-                            <td><a asp-area="Admin" asp-action="DeleteSlider" asp-route-id="@slide.Id"  class="btn btn-danger">Delete</a></td>
+                            <td><a style="display:@(slide.IsDeleted ? "none" : string.Empty);)" asp-area="Admin" asp-action="UpdateSlider" asp-route-id="@slide.Id" class="btn btn-warning">Edit</a></td>
+                            <td><a style="display:@(slide.IsDeleted ? "none" : string.Empty);)" asp-area="Admin" asp-action="DeleteSlider" asp-route-id="@slide.Id" class="btn btn-danger">Delete</a></td>
+                            <td><a style="display:@(slide.IsDeleted ? string.Empty : "none" );)" asp-area="Admin" asp-action="RevokeDelete" asp-route-id="@slide.Id" class="btn btn-primary">Revoke</a></td>
+                            
                         </tr>
                     }
                 </tbody>
